@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marcador y gestión de jugadores</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>Marcador del partido</h1>
+      <p class="subtitle">Controla el marcador y gestiona la lista de jugadores.</p>
+    </header>
+
+    <main>
+      <section class="scoreboard" aria-labelledby="scoreboard-title">
+        <h2 id="scoreboard-title">Marcador en vivo</h2>
+        <div class="teams" role="group" aria-label="Marcador de equipos">
+          <article class="team-card">
+            <h3>Equipo Azul</h3>
+            <p class="score" aria-live="polite" aria-atomic="true" id="score-home">0</p>
+            <button class="btn" type="button" data-action="add" data-team="home">Sumar punto</button>
+          </article>
+          <article class="team-card">
+            <h3>Equipo Rojo</h3>
+            <p class="score" aria-live="polite" aria-atomic="true" id="score-away">0</p>
+            <button class="btn" type="button" data-action="add" data-team="away">Sumar punto</button>
+          </article>
+        </div>
+        <div class="score-controls">
+          <button class="btn btn-secondary" type="button" id="reset-score">Reiniciar marcador</button>
+        </div>
+        <p class="status" id="match-status" aria-live="polite" aria-atomic="true">
+          El partido está empezando. ¡Anota el primer punto!
+        </p>
+      </section>
+
+      <section class="players" aria-labelledby="players-title">
+        <h2 id="players-title">Gestión de jugadores</h2>
+        <form class="player-form" id="player-form" novalidate>
+          <div class="field">
+            <label for="player-name">Nombre del jugador</label>
+            <input
+              id="player-name"
+              name="playerName"
+              type="text"
+              autocomplete="off"
+              placeholder="Escribe un nombre"
+              required
+            />
+          </div>
+          <button class="btn" type="submit">Añadir jugador</button>
+        </form>
+        <p class="feedback" id="player-feedback" aria-live="polite" aria-atomic="true"></p>
+        <ul class="player-list" id="player-list" aria-live="polite"></ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Proyecto de práctica: HTML5, DOM y accesibilidad.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
