@@ -1,65 +1,51 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Marcador y gestión de jugadores</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <h1>Marcador del partido</h1>
-      <p class="subtitle">Controla el marcador y gestiona la lista de jugadores.</p>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcador de partidos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Marcador del partido</h1>
+    <p class="desc">Lleva la cuenta del marcador y apunta los jugadores</p>
+  </header>
 
-    <main>
-      <section class="scoreboard" aria-labelledby="scoreboard-title">
-        <h2 id="scoreboard-title">Marcador en vivo</h2>
-        <div class="teams" role="group" aria-label="Marcador de equipos">
-          <article class="team-card">
-            <h3>Equipo Azul</h3>
-            <p class="score" aria-live="polite" aria-atomic="true" id="score-home">0</p>
-            <button class="btn" type="button" data-action="add" data-team="home">Sumar punto</button>
-          </article>
-          <article class="team-card">
-            <h3>Equipo Rojo</h3>
-            <p class="score" aria-live="polite" aria-atomic="true" id="score-away">0</p>
-            <button class="btn" type="button" data-action="add" data-team="away">Sumar punto</button>
-          </article>
+  <main>
+    <section class="marcador">
+      <h2>Marcador</h2>
+      <div class="equipos">
+        <div class="equipo">
+          <h3>Equipo Azul</h3>
+          <span class="puntos" id="puntos-local">0</span>
+          <button class="btn" data-equipo="local">+1</button>
         </div>
-        <div class="score-controls">
-          <button class="btn btn-secondary" type="button" id="reset-score">Reiniciar marcador</button>
+        <div class="equipo">
+          <h3>Equipo Rojo</h3>
+          <span class="puntos" id="puntos-visitante">0</span>
+          <button class="btn" data-equipo="visitante">+1</button>
         </div>
-        <p class="status" id="match-status" aria-live="polite" aria-atomic="true">
-          El partido está empezando. ¡Anota el primer punto!
-        </p>
-      </section>
+      </div>
+      <button class="btn gris" id="reiniciar">Reiniciar</button>
+      <p class="mensaje" id="mensaje">Empieza el partido!</p>
+    </section>
 
-      <section class="players" aria-labelledby="players-title">
-        <h2 id="players-title">Gestión de jugadores</h2>
-        <form class="player-form" id="player-form" novalidate>
-          <div class="field">
-            <label for="player-name">Nombre del jugador</label>
-            <input
-              id="player-name"
-              name="playerName"
-              type="text"
-              autocomplete="off"
-              placeholder="Escribe un nombre"
-              required
-            />
-          </div>
-          <button class="btn" type="submit">Añadir jugador</button>
-        </form>
-        <p class="feedback" id="player-feedback" aria-live="polite" aria-atomic="true"></p>
-        <ul class="player-list" id="player-list" aria-live="polite"></ul>
-      </section>
-    </main>
+    <section class="jugadores">
+      <h2>Jugadores</h2>
+      <form id="form-jugador">
+        <input type="text" id="nombre" placeholder="Nombre del jugador" required>
+        <button class="btn" type="submit">Añadir</button>
+      </form>
+      <p class="aviso" id="aviso"></p>
+      <ul id="lista-jugadores"></ul>
+    </section>
+  </main>
 
-    <footer class="site-footer">
-      <p>Proyecto de práctica: HTML5, DOM y accesibilidad.</p>
-    </footer>
+  <footer>
+    <p>Pau Ortola - 2025</p>
+  </footer>
 
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
 </html>

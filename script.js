@@ -1,124 +1,103 @@
-const scores = {
-  home: 0,
-  away: 0,
-};
+// marcador
+let puntosLocal = 0;
+let puntosVisitante = 0;
 
-const scoreHome = document.querySelector("#score-home");
-const scoreAway = document.querySelector("#score-away");
-const matchStatus = document.querySelector("#match-status");
-const resetButton = document.querySelector("#reset-score");
-const scoreButtons = document.querySelectorAll("button[data-action='add']");
+const spanLocal = document.getElementById("puntos-local");
+const spanVisitante = document.getElementById("puntos-visitante");
+const mensaje = document.getElementById("mensaje");
 
-const playerForm = document.querySelector("#player-form");
-const playerInput = document.querySelector("#player-name");
-const playerList = document.querySelector("#player-list");
-const playerFeedback = document.querySelector("#player-feedback");
-
-const players = new Set();
-
-const updateScores = () => {
-  scoreHome.textContent = scores.home;
-  scoreAway.textContent = scores.away;
-  updateStatus();
-};
-
-const updateStatus = () => {
-  if (scores.home === 0 && scores.away === 0) {
-    matchStatus.textContent = "El partido está empezando. ¡Anota el primer punto!";
-    return;
-  }
-
-  if (scores.home === scores.away) {
-    matchStatus.textContent = `Empate a ${scores.home}. ¡Partido igualado!`;
-    return;
-  }
-
-  const leader = scores.home > scores.away ? "Equipo Azul" : "Equipo Rojo";
-  matchStatus.textContent = `${leader} va ganando.`;
-};
-
-const addPoint = (team) => {
-  scores[team] += 1;
-  updateScores();
-};
-
-const resetScores = () => {
-  scores.home = 0;
-  scores.away = 0;
-  updateScores();
-  matchStatus.textContent = "Marcador reiniciado. ¡A jugar de nuevo!";
-};
-
-const showPlayerFeedback = (message, type) => {
-  playerFeedback.textContent = message;
-  playerFeedback.className = `feedback ${type}`.trim();
-};
-
-const renderPlayers = () => {
-  playerList.innerHTML = "";
-  if (players.size === 0) {
-    const emptyItem = document.createElement("li");
-    emptyItem.textContent = "Aún no hay jugadores añadidos.";
-    emptyItem.className = "player-item";
-    playerList.appendChild(emptyItem);
-    return;
-  }
-
-  [...players].forEach((player) => {
-    const item = document.createElement("li");
-    item.className = "player-item";
-
-    const name = document.createElement("span");
-    name.textContent = player;
-
-    const removeButton = document.createElement("button");
-    removeButton.type = "button";
-    removeButton.className = "btn remove-btn";
-    removeButton.textContent = "Eliminar";
-    removeButton.addEventListener("click", () => {
-      players.delete(player);
-      renderPlayers();
-      showPlayerFeedback(`Se eliminó a ${player}.`, "success");
-    });
-
-    item.append(name, removeButton);
-    playerList.appendChild(item);
-  });
-};
-
-scoreButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const team = button.dataset.team;
-    addPoint(team);
-  });
+document.querySelectorAll("[data-equipo]").forEach(btn => {
+  btn.onclick = function() {
+    if (this.dataset.equipo === "local") {
+      puntosLocal++;
+      spanLocal.textContent = puntosLocal;
+    } else {
+      puntosVisitante++;
+      spanVisitante.textContent = puntosVisitante;
+    }
+    actualizarMensaje();
+  };
 });
 
-resetButton.addEventListener("click", resetScores);
+document.getElementById("reiniciar").onclick = function() {
+  puntosLocal = 0;
+  puntosVisitante = 0;
+  spanLocal.textContent = "0";
+  spanVisitante.textContent = "0";
+  mensaje.textContent = "Marcador reiniciado!";
+};
 
-playerForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const name = playerInput.value.trim();
+function actualizarMensaje() {
+  if (puntosLocal > puntosVisitante) {
+    mensaje.textContent = "Va ganando el Equipo Azul";
+  } else if (puntosVisitante > puntosLocal) {
+    mensaje.textContent = "Va ganando el Equipo Rojo";
+  } else {
+    mensaje.textContent = "Empate a " + puntosLocal;
+  }
+}
 
-  if (!name) {
-    showPlayerFeedback("Escribe un nombre válido.", "error");
+// jugadores
+const jugadores = [];
+const form = document.getElementById("form-jugador");
+const inputNombre = document.getElementById("nombre");
+const lista = document.getElementById("lista-jugadores");
+const aviso = document.getElementById("aviso");
+
+form.onsubmit = function(e) {
+  e.preventDefault();
+
+  const nombre = inputNombre.value.trim();
+  if (!nombre) {
+    mostrarAviso("Escribe un nombre", "mal");
     return;
   }
 
-  const normalized = name.toLowerCase();
-  const alreadyExists = [...players].some(
-    (player) => player.toLowerCase() === normalized
-  );
-
-  if (alreadyExists) {
-    showPlayerFeedback("Ese jugador ya está en la lista.", "error");
+  // comprobar si ya existe
+  const existe = jugadores.some(j => j.toLowerCase() === nombre.toLowerCase());
+  if (existe) {
+    mostrarAviso("Ya esta en la lista", "mal");
     return;
   }
 
-  players.add(name);
-  playerInput.value = "";
-  renderPlayers();
-  showPlayerFeedback(`Añadido: ${name}.`, "success");
-});
+  jugadores.push(nombre);
+  inputNombre.value = "";
+  mostrarAviso("Añadido: " + nombre, "ok");
+  pintarLista();
+};
 
-renderPlayers();
-updateScores();
+function mostrarAviso(txt, tipo) {
+  aviso.textContent = txt;
+  aviso.className = "aviso " + tipo;
+}
+
+function pintarLista() {
+  lista.innerHTML = "";
+
+  if (jugadores.length === 0) {
+    const li = document.createElement("li");
+    li.className = "vacio";
+    li.textContent = "No hay jugadores";
+    lista.appendChild(li);
+    return;
+  }
+
+  jugadores.forEach((nombre, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>${nombre}</span>
+      <button class="btn rojo" onclick="borrar(${i})">Quitar</button>
+    `;
+    lista.appendChild(li);
+  });
+}
+
+function borrar(i) {
+  const nombre = jugadores[i];
+  jugadores.splice(i, 1);
+  mostrarAviso("Eliminado: " + nombre, "ok");
+  pintarLista();
+}
+
+// iniciar
+pintarLista();
